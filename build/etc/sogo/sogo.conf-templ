@@ -1,0 +1,87 @@
+{
+  /* Debug */
+  //SOGoDebugRequests = YES;
+  //SoDebugBaseURL = YES;
+  //ImapDebugEnabled = YES;
+  //LDAPDebugEnabled = YES;
+  //PGDebugEnabled = YES;
+  //MySQL4DebugEnabled = YES;
+  //SOGoUIxDebugEnabled = YES;
+  //WODontZipResponse = YES;
+  //WOLogFile = /var/log/sogo/sogo.log;
+
+  SOGoProfileURL          = "mysql://{{SOGO_DB_USER}}:{{SOGO_DB_PASS}}@{{SOGO_DB_HOST}}:3306/{{SOGO_DB_NAME}}/sogo_user_profile";
+  OCSFolderInfoURL        = "mysql://{{SOGO_DB_USER}}:{{SOGO_DB_PASS}}@{{SOGO_DB_HOST}}:3306/{{SOGO_DB_NAME}}/sogo_folder_info";
+  OCSSessionsFolderURL    = "mysql://{{SOGO_DB_USER}}:{{SOGO_DB_PASS}}@{{SOGO_DB_HOST}}:3306/{{SOGO_DB_NAME}}/sogo_sessions_folder";
+  OCSEMailAlarmsFolderURL = "mysql://{{SOGO_DB_USER}}:{{SOGO_DB_PASS}}@{{SOGO_DB_HOST}}:3306/{{SOGO_DB_NAME}}/sogo_alarms_folder";
+
+  SOGoEnableEMailAlarms = YES; 
+  WONoDetach = YES;
+  WOPort = 20000 ;
+  WOLogFile = "-" ;
+  WOPidFile = /tmp/sogo.pid ;
+  WOWorkersCount = 4;
+
+  /* General */
+  SOGoSupportedLanguages = ( "German"  );
+  SOGoLanguage = German;
+  SOGoTimeZone = Europe/Berlin;
+  //SOGoCalendarDefaultRoles = (
+  //  PublicDAndTViewer,
+  //  ConfidentialDAndTViewer
+  //);
+  SOGoSuperUsernames = ({{SOGO_SUPERUSER}}); 
+  //SxVMemLimit = 384;
+  //WOPidFile = "/var/run/sogo/sogo.pid";
+
+  /* reach memcached through docker */
+  SOGoMemcachedHost = "memcached";
+
+  SOGoEnableDomainBasedUID = YES;
+  SOGoFirstDayOfWeek = 1;
+  SOGoMailMessageCheck = "every_minute";
+  //SOGoMailMessageCheck = "every_2_minutes";
+
+  /* Mail */
+  SOGoDraftsFolderName = Drafts;
+  SOGoSentFolderName = Sent;
+  SOGoTrashFolderName = Trash;
+  SOGoIMAPServer =  imap://{{IMAP_HOST}}:143;
+  SOGoSieveServer = sieve://{{IMAP_HOST}}:4190;
+  SOGoSMTPServer = imap;
+  SOGoMailingMechanism = smtp;
+  SOGoSMTPAuthenticationType = PLAIN;
+  SOGoForceExternalLoginWithEmail = YES;
+  SOGoMailSpoolPath = /var/spool/sogo;
+  //NGImap4ConnectionStringSeparator = ".";
+
+  /* Notifications */
+  SOGoAppointmentSendEMailNotifications = YES;
+  SOGoACLsSendEMailNotifications = YES;
+  SOGoFoldersSendEMailNotifications = YES;
+  SOGoDraftsFolderName = Drafts;
+
+  /* Authentication */
+  SOGoPasswordChangeEnabled = YES;
+
+  /* Web Interface */
+  SOGoPageTitle = SOGo;
+  SOGoVacationEnabled = YES;
+  SOGoForwardEnabled = YES;
+  SOGoSieveScriptsEnabled = YES;
+  SOGoMailAuxiliaryUserAccountsEnabled = NO;
+  SOGoTrustProxyAuthentication = NO;
+  SOGoXSRFValidationEnabled = YES;
+  
+  //SOGoDomainsVisibility = (
+  //  (
+  //    "domain1.com",
+  //    "domain2.com"
+  //  )
+  //);
+
+  domains = {
+    {{DOMAINS}}
+  };
+}
+

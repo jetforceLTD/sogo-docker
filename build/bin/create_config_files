@@ -1,0 +1,61 @@
+#!/bin/bash
+EF=/etc/sogo/sogo.env
+
+NA=`basename $0`
+
+if [ ! -e $EF ] ; then 
+  echo "$NA: no env file <$EF> given. Skipping $NA"
+  exit 0
+fi
+
+. $EF
+
+export MYSQL_PWD=${IMAP_DB_PASS}
+
+PARA=" -h ${IMAP_DB_HOST} -u${IMAP_DB_USER} "
+
+# Wait for MySQL to warm-up
+while true ; do
+  mysqladmin ping $PARA >/dev/null 
+  echo "$NA: waiting for imap database server: <${IMAP_DB_HOST}> ..."
+  sleep 1
+  if [ "$?" = "0" ] ; then
+    break
+  fi
+done
+
+# Recreate view
+mysql $PARA ${IMAP_DB_NAME} -e "DROP VIEW IF EXISTS sogo_users"
+mysql $PARA ${IMAP_DB_NAME} -e "CREATE VIEW sogo_users AS SELECT local_part AS c_uid, username AS c_name, PASSWORD AS c_password, name AS c_cn, username AS mail, domain FROM mailbox;"
+
+list="/etc/sogo/sogo.conf /etc/sogo/sogo-domain.conf"
+for FI in $list ; do
+  cp -f ${FI}-templ ${FI}
+  echo "Create <$FI> ..."
+  sed -i "s/{{SOGO_DB_HOST}}/$SOGO_DB_HOST/g"          $FI
+  sed -i "s/{{SOGO_DB_NAME}}/$SOGO_DB_NAME/g"          $FI
+  sed -i "s/{{SOGO_DB_USER}}/$SOGO_DB_USER/g"          $FI
+  sed -i "s/{{SOGO_DB_PASS}}/$SOGO_DB_PASS/g"          $FI
+  sed -i "s/{{IMAP_DB_HOST}}/$IMAP_DB_HOST/g"          $FI
+  sed -i "s/{{IMAP_DB_NAME}}/$IMAP_DB_NAME/g"          $FI
+  sed -i "s/{{IMAP_DB_USER}}/$IMAP_DB_USER/g"          $FI
+  sed -i "s/{{IMAP_DB_PASS}}/$IMAP_DB_PASS/g"          $FI
+  sed -i "s/{{IMAP_HOST}}/$IMAP_HOST/g"                $FI
+  sed -i "s/{{SOGO_SUPERUSER}}/$SOGO_SUPERUSER/g"      $FI
+done
+
+domains=$( mysql -s $PARA ${IMAP_DB_NAME} -e 'select domain from domain where transport = "virtual" and active = "1" ;' )
+X=`tempfile`
+for d in $domains ; do
+  cat /etc/sogo/sogo-domain.conf | sed "s/{{DOMAIN}}/${d}/g" >> $X
+done
+echo "Insert domains in </etc/sogo/sogo.conf> ..."
+
+sed -i "/{{DOMAINS}}/r $X" /etc/sogo/sogo.conf
+sed -i "s/{{DOMAINS}}//g"  /etc/sogo/sogo.conf
+rm $X
+
+if [ "${IMAP_ADMIN_CREDS}" != "" ] ; then
+  echo "Create </etc/sogo/sieve.creds> ..."
+  echo "${IMAP_ADMIN_CREDS}" > /etc/sogo/sieve.creds
+fi

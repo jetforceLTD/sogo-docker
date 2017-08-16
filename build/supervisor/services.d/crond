@@ -1,0 +1,5 @@
+[program:crond]
+command=/usr/sbin/cron -f
+autorestart=true
+priority=2
+

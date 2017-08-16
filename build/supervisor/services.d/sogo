@@ -1,0 +1,10 @@
+[program:sogo]
+command="/usr/local/sbin/sogod"
+user=sogo
+stdout_logfile=/dev/stdout
+stdout_logfile_maxbytes=0
+stderr_logfile=/dev/stderr
+stderr_logfile_maxbytes=0
+autorestart = true
+priority=5
+

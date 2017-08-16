@@ -1,0 +1,19 @@
+    "{{DOMAIN}}" = {
+      SOGoMailDomain = "{{DOMAIN}}";
+      SOGoUserSources =
+      (
+        {
+          DomainFieldName = domain;
+          IMAPLoginFieldName = mail;
+          LoginFieldNames = ( "c_name" );
+          canAuthenticate = YES;
+          displayName = "Dominadressen {{DOMAIN}}";
+          id = {{DOMAIN}} ;
+          isAddressBook = YES;
+          type = sql;
+          userPasswordAlgorithm = sha512-crypt ;
+          viewURL = "mysql://{{IMAP_DB_USER}}:{{IMAP_DB_PASS}}@{{IMAP_DB_HOST}}:3306/{{IMAP_DB_NAME}}/sogo_users";
+        }
+      );
+    };
+
