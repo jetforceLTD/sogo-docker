@@ -15,13 +15,14 @@ export MYSQL_PWD=${IMAP_DB_PASS}
 PARA=" -h ${IMAP_DB_HOST} -u${IMAP_DB_USER} "
 
 # Wait for MySQL to warm-up
-while true ; do
-  mysqladmin ping $PARA >/dev/null 
-  echo "$NA: waiting for imap database server: <${IMAP_DB_HOST}> ..."
+for i in {1..20} ; do
+  mysqladmin ping $PARA >/dev/null
+  ret=$? 
   sleep 1
-  if [ "$?" = "0" ] ; then
+  if [ "$ret" = "0" ] ; then
     break
   fi
+  echo "$NA: i=$i waiting for imap database server: <${IMAP_DB_HOST}> ..."
 done
 
 # Recreate view

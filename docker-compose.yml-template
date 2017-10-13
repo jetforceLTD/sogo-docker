@@ -15,9 +15,10 @@ services:
     ##################################################
     # RUN section
     ##################################################
-    image: unimock/sogo-docker:3.2.10
+    image: unimock/sogo-docker:3.2.10-1
     container_name: sogo
     hostname: sogo
+    restart: unless-stopped
     links: 
        - sogo-db
     external_links:
@@ -51,10 +52,12 @@ services:
       - default
   memcached:
     image: memcached:1.4-alpine
+    restart: unless-stopped
     networks:
       - default  
   nginx:
     image: nginx
+    restart: unless-stopped
     links:
        - sogo
     volumes_from:

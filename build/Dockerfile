@@ -47,14 +47,16 @@ RUN echo "build SOPE ..." \
    && cd /build && ./configure --with-gnustep --enable-debug --disable-strip && make && make install \
    && rm -rf /tmp/* /build
 
+
+
+# ugly unimock patch for change password in multidomain setup against postfixadmin mysql user_sogo view
 RUN echo "build SOGo ..."  \
    && wget -q  -O /tmp/SOGo-${SOGO_VERSION}.tar.gz https://github.com/inverse-inc/sogo/archive/SOGo-${SOGO_VERSION}.tar.gz \
    && tar -C  /tmp -xzf /tmp/SOGo-${SOGO_VERSION}.tar.gz \
    && mkdir -p /build && mv /tmp/sogo-SOGo-${SOGO_VERSION}/* /build/. \
-   # ugly unimock patch for change password in multidomain setup against postfixadmin mysql user_sogo view
+   && echo "!!!!!!!!! START ugly unimock patch in /build/SoObjects/SOGo/SQLSource.m !!!!!!!!!!!!!!" \
    && sed -i 's/WHERE c_uid = /WHERE c_name = /'  /build/SoObjects/SOGo/SQLSource.m \
-   && echo "!!!!!!!!! ugly unimock patch in /build/SoObjects/SOGo/SQLSource.m !!!!!!!!!!!!!!" \
-   # end of ugly unimock patch
+   && echo "!!!!!!!!! END   ugly unimock patch in /build/SoObjects/SOGo/SQLSource.m !!!!!!!!!!!!!!" \
    && cd /build && ./configure --enable-debug --disable-strip && make && make install \
    && rm -rf /tmp/* /build
 
