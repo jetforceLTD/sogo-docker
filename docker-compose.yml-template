@@ -10,6 +10,7 @@ services:
       dockerfile: Dockerfile
       args:
         SOGO_VERSION: 3.2.10
+        #SOGO_VERSION: 2.3.23
         BUILD_TZ: Europe/Berlin
         GOSU_VERSION: "1.10"
     ##################################################
@@ -20,34 +21,35 @@ services:
     hostname: sogo
     restart: unless-stopped
     links: 
-       - sogo-db
+       - ${SOGO_DB_HOST}
     external_links:
        - imap_mysql_1:imap-db
        - imap
     volumes:
-       - ./service:/service
+       - ${GLOBAL_DIR_SERV}/sogo/service:/service
     environment:
-       - "IMAP_HOST=imap"
+       - IMAP_HOST=${IMAP_HOST}
+       - DISABLED_SERVICES=rsyslog
     depends_on:
-       - sogo-db
+       - ${SOGO_DB_HOST}
     networks:
        - default
        - imap
     ports:
        - "20000:20000"
   sogo-db:
-    image: mariadb
+    image: mysql:5.7
     restart: unless-stopped
     environment:
-      - MYSQL_ROOT_PASSWORD=ab123
-      - TZ=Europe/Berlin
-      - MYSQL_DATABASE=sogo
-      - MYSQL_USER=admin
-      - MYSQL_PASSWORD=ab123
+      - MYSQL_RANDOM_ROOT_PASSWORD=yes
+      - TZ=${GLOBAL_TZ}
+      - MYSQL_DATABASE=${SOGO_DB_NAME}
+      - MYSQL_USER=${SOGO_DB_USER}
+      - MYSQL_PASSWORD=${SOGO_DB_PASS}
     expose:
       - 3306
     volumes:
-      - ./persistent/mysql:/var/lib/mysql
+      - ${GLOBAL_DIR_SERV}/sogo/persistent/mysql:/var/lib/mysql
     networks:
       - default
   memcached:
@@ -65,13 +67,13 @@ services:
     expose:
         - "80"
     labels:
-      - "traefik.enable=true"
-      - "traefik.backend=sogo"
-      - "traefik.port=80"
-      - "traefik.docker.network=traefik_default"
-      - "traefik.frontend.rule=Host:imap.domain.de"
+      - traefik.enable=true
+      - traefik.backend=sogo
+      - traefik.port=80
+      - traefik.docker.network=traefik_default
+      - traefik.frontend.rule=Host:${SOGO_FRONTEND_URL}
     volumes: 
-       - ./service/nginx.conf:/etc/nginx/nginx.conf:ro
+       - ${GLOBAL_DIR_SERV}/sogo/service/nginx.conf:/etc/nginx/nginx.conf:ro
     networks:
       - traefik_default
       - default

@@ -53,7 +53,7 @@
   SOGoSMTPAuthenticationType = PLAIN;
   SOGoForceExternalLoginWithEmail = YES;
   SOGoMailSpoolPath = /var/spool/sogo;
-  //NGImap4ConnectionStringSeparator = ".";
+  NGImap4ConnectionStringSeparator = "/";
 
   /* Notifications */
   SOGoAppointmentSendEMailNotifications = YES;

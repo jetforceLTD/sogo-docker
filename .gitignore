@@ -3,3 +3,4 @@
 /persistent
 /service
 /dc-service.yml
+/.env
