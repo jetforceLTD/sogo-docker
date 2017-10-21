@@ -10,21 +10,39 @@ fi
 
 . $EF
 
-export MYSQL_PWD=${IMAP_DB_PASS}
-
-PARA=" -h ${IMAP_DB_HOST} -u${IMAP_DB_USER} "
-
-# Wait for MySQL to warm-up
+######################################
+# Wait for sogo-MySQL to warm-up
+#
+export MYSQL_PWD=${SOGO_DB_PASS}
+DB=${SOGO_DB_HOST}
+PARA=" -h ${DB} -u${SOGO_DB_USER}"
 for i in {1..20} ; do
-  mysqladmin ping $PARA >/dev/null
-  ret=$? 
-  sleep 1
-  if [ "$ret" = "0" ] ; then
+  mysqladmin ping $PARA >/dev/null 2>/dev/null
+  if [ "$?" = "0" ] ; then
+    echo "$NA: i=$i imap database server: <${DB}> ready"
     break
   fi
-  echo "$NA: i=$i waiting for imap database server: <${IMAP_DB_HOST}> ..."
+  echo "$NA: i=$i waiting for database server: <${DB}> ..."
+  sleep 1
 done
 
+######################################
+# Wait for imap-MySQL to warm-up
+#
+export MYSQL_PWD=${IMAP_DB_PASS}
+DB=${IMAP_DB_HOST}
+PARA=" -h ${DB} -u${IMAP_DB_USER}"
+for i in {1..20} ; do
+  mysqladmin ping $PARA >/dev/null 2>/dev/null
+  if [ "$?" = "0" ] ; then
+    echo "$NA: i=$i imap database server: <${DB}> ready"
+    break
+  fi
+  echo "$NA: i=$i waiting for database server: <${DB}> ..."
+  sleep 1
+done
+
+########################################
 # Recreate view
 mysql $PARA ${IMAP_DB_NAME} -e "DROP VIEW IF EXISTS sogo_users"
 mysql $PARA ${IMAP_DB_NAME} -e "CREATE VIEW sogo_users AS SELECT local_part AS c_uid, username AS c_name, PASSWORD AS c_password, name AS c_cn, username AS mail, domain FROM mailbox;"

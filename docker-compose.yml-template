@@ -16,7 +16,7 @@ services:
     ##################################################
     # RUN section
     ##################################################
-    image: unimock/sogo-docker:3.2.10-2
+    image: unimock/sogo-docker:3.2.10-3
     container_name: sogo
     hostname: sogo
     restart: unless-stopped
