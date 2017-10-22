@@ -1,5 +1,6 @@
 #!/bin/bash
-EF=/etc/sogo/sogo.env
+
+EF=/service/sogo.env
 
 NA=`basename $0`
 
@@ -9,6 +10,13 @@ if [ ! -e $EF ] ; then
 fi
 
 . $EF
+
+cp /etc/sogo/sogo.conf-templ-orig /service
+if [ ! -e /service/sogo.conf-templ ] ; then
+  cp -v /etc/sogo/sogo.conf-templ-orig /service/sogo.conf-templ
+fi
+cp /service/sogo.conf-templ /etc/sogo/
+
 
 ######################################
 # Wait for sogo-MySQL to warm-up
