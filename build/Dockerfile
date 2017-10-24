@@ -40,7 +40,7 @@ RUN echo "Getting gosu: ${GOSU_VERSION} and its signature" && \
     chmod +x /usr/local/bin/gosu && \
     gosu nobody true
 
-RUN echo "build SOPE ..." \
+RUN echo "build SOPE-${SOGO_VERSION} ..." \
    && wget -q -O /tmp/SOPE-${SOGO_VERSION}.tar.gz https://github.com/inverse-inc/sope/archive/SOPE-${SOGO_VERSION}.tar.gz \
    && tar -C  /tmp -xzf /tmp/SOPE-${SOGO_VERSION}.tar.gz \
    && mkdir -p /build && mv /tmp/sope-SOPE-${SOGO_VERSION}/* /build/. \
@@ -50,7 +50,7 @@ RUN echo "build SOPE ..." \
 
 
 # ugly unimock patch for change password in multidomain setup against postfixadmin mysql user_sogo view
-RUN echo "build SOGo ..."  \
+RUN echo "build SOGo-${SOGO_VERSION} ..."  \
    && wget -q  -O /tmp/SOGo-${SOGO_VERSION}.tar.gz https://github.com/inverse-inc/sogo/archive/SOGo-${SOGO_VERSION}.tar.gz \
    && tar -C  /tmp -xzf /tmp/SOGo-${SOGO_VERSION}.tar.gz \
    && mkdir -p /build && mv /tmp/sogo-SOGo-${SOGO_VERSION}/* /build/. \
