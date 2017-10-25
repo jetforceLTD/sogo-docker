@@ -69,6 +69,8 @@ for FI in $list ; do
   sed -i "s/{{IMAP_DB_PASS}}/$IMAP_DB_PASS/g"          $FI
   sed -i "s/{{IMAP_HOST}}/$IMAP_HOST/g"                $FI
   sed -i "s/{{SOGO_SUPERUSER}}/$SOGO_SUPERUSER/g"      $FI
+  sed -i "s/{{SOGO_APP_WORKERS}}/$SOGO_APP_WORKERS/g"  $FI
+  sed -i "s/{{SOGO_APP_AUX_ACCOUNTS}}/$SOGO_APP_AUX_ACCOUNTS/g"  $FI
 done
 
 domains=$( mysql -s $PARA ${IMAP_DB_NAME} -e 'select domain from domain where transport = "virtual" and active = "1" ;' )

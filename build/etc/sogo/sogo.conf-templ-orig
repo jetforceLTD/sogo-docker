@@ -20,7 +20,7 @@
   WOPort = 20000 ;
   WOLogFile = "-" ;
   WOPidFile = /tmp/sogo.pid ;
-  WOWorkersCount = 4;
+  WOWorkersCount = {{SOGO_APP_WORKERS}} ;
 
   /* General */
   SOGoSupportedLanguages = ( "German"  );
@@ -69,7 +69,7 @@
   SOGoVacationEnabled = YES;
   SOGoForwardEnabled = YES;
   SOGoSieveScriptsEnabled = YES;
-  SOGoMailAuxiliaryUserAccountsEnabled = NO;
+  SOGoMailAuxiliaryUserAccountsEnabled = {{SOGO_APP_AUX_ACCOUNTS}};
   SOGoTrustProxyAuthentication = NO;
   SOGoXSRFValidationEnabled = YES;
   
