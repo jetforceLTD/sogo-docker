@@ -47,8 +47,6 @@ RUN echo "build SOPE-${SOGO_VERSION} ..." \
    && cd /build && ./configure --with-gnustep --enable-debug --disable-strip && make && make install \
    && rm -rf /tmp/* /build
 
-
-
 # ugly unimock patch for change password in multidomain setup against postfixadmin mysql user_sogo view
 RUN echo "build SOGo-${SOGO_VERSION} ..."  \
    && wget -q  -O /tmp/SOGo-${SOGO_VERSION}.tar.gz https://github.com/inverse-inc/sogo/archive/SOGo-${SOGO_VERSION}.tar.gz \
@@ -70,12 +68,16 @@ RUN echo "sogo post installation ..." \
    && install -o sogo -g sogo -m 750 -d /var/spool/sogo  \
    && install -o sogo -g sogo -m 750 -d /var/log/sogo
 
-copy etc/sogo   /etc/sogo
+COPY etc/sogo   /etc/sogo
 RUN touch /etc/sogo/sieve.creds
 
 RUN echo '* * * * *   sogo   /usr/local/sbin/sogo-ealarms-notify 2>/dev/null' > /etc/cron.d/sogo && \
     echo '* * * * *   sogo   /usr/local/sbin/sogo-tool expire-sessions 60' >> /etc/cron.d/sogo   && \
     echo '0 0 * * *   sogo   /usr/local/sbin/sogo-tool update-autoreply -p /etc/sogo/sieve.creds' >> /etc/cron.d/sogo
+
+COPY nginx     /nginx
+VOLUME /nginx
+
 
 ############################################################################################
 
