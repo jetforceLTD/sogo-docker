@@ -83,7 +83,13 @@ echo "Insert domains in </etc/sogo/sogo.conf> ..."
 sed -i "/{{DOMAINS}}/r $X" /etc/sogo/sogo.conf
 sed -i "s/{{DOMAINS}}//g"  /etc/sogo/sogo.conf
 rm $X
-
+########################################
+# modify nginx.conf
+#
+FI=/nginx/nginx.conf
+sed -i "s|{{GLOBAL_FRONTEND_PORT}}|$GLOBAL_FRONTEND_PORT|g"  $FI
+sed -i "s|{{SOGO_FRONTEND_FQDN}}|$SOGO_FRONTEND_FQDN|g"  $FI
+########################################
 if [ "${IMAP_ADMIN_CREDS}" != "" ] ; then
   echo "Create </etc/sogo/sieve.creds> ..."
   echo "${IMAP_ADMIN_CREDS}" > /etc/sogo/sieve.creds
