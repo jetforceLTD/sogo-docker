@@ -1,0 +1,20 @@
+#!/bin/bash
+
+EF=/service/sogo.env
+
+. $EF
+
+restart="0"
+while true ; do
+  mysql -h${SOGO_DB_HOST} -u${SOGO_DB_USER} -p${SOGO_DB_PASS}  -e "desc ${SOGO_DB_NAME}.sogo_alarms_folder" >/dev/null 2>&1
+  if [ "$?" = "0" ] ; then
+    touch /ready
+    exit 0
+  fi
+  if [ "restart" = "0" ] ; then
+    /etc/init.d/sogo restart
+    restart="1"
+  fi
+  sleep 1
+done
+

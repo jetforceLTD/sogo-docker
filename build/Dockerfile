@@ -72,8 +72,8 @@ COPY etc/sogo   /etc/sogo
 RUN touch /etc/sogo/sieve.creds
 
 RUN echo '* * * * *   sogo   /usr/local/sbin/sogo-ealarms-notify 2>/dev/null' > /etc/cron.d/sogo && \
-    echo '* * * * *   sogo   /usr/local/sbin/sogo-tool expire-sessions 60' >> /etc/cron.d/sogo   && \
-    echo '0 0 * * *   sogo   /usr/local/sbin/sogo-tool update-autoreply -p /etc/sogo/sieve.creds' >> /etc/cron.d/sogo
+    echo '* * * * *   sogo   /usr/local/sbin/sogo-tool expire-sessions {{SOGO_APP_SESSION_EXPIRE}}' >> /etc/cron.d/sogo   && \
+    echo '0 0 * * *   sogo   /usr/local/sbin/sogo-tool update-autoreply -p /etc/sogo/sieve.creds'   >> /etc/cron.d/sogo
 
 COPY nginx     /nginx
 VOLUME /nginx

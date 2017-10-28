@@ -46,6 +46,7 @@ wait $PID
 echo "#################################################"
 echo "# shutdown container"
 echo "#"
+rm -f /ready
 list=$(ls -1 /etc/supervisor/shutdown.d/* 2>/dev/null)
 for i in $list ; do
   echo "execute: <$i>"

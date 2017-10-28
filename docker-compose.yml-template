@@ -35,8 +35,8 @@ services:
     networks:
        - default
        - imap
-    ports:
-       - "20000:20000"
+    expose:
+       - "20000"
   sogo-db:
     image: mysql:5.7
     restart: unless-stopped

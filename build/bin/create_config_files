@@ -17,10 +17,12 @@ if [ ! -e /service/sogo.conf-templ ] ; then
 fi
 cp /service/sogo.conf-templ /etc/sogo/
 
-
+########################################
+# modify nginx.conf
+sed -i "s|{{GLOBAL_FRONTEND_PORT}}|$GLOBAL_FRONTEND_PORT|g" /nginx/nginx.conf
+sed -i "s|{{SOGO_FRONTEND_FQDN}}|$SOGO_FRONTEND_FQDN|g"     /nginx/nginx.conf
 ######################################
 # Wait for sogo-MySQL to warm-up
-#
 export MYSQL_PWD=${SOGO_DB_PASS}
 DB=${SOGO_DB_HOST}
 PARA=" -h ${DB} -u${SOGO_DB_USER}"
@@ -33,10 +35,8 @@ for i in {1..20} ; do
   echo "$NA: i=$i waiting for database server: <${DB}> ..."
   sleep 1
 done
-
 ######################################
 # Wait for imap-MySQL to warm-up
-#
 export MYSQL_PWD=${IMAP_DB_PASS}
 DB=${IMAP_DB_HOST}
 PARA=" -h ${DB} -u${IMAP_DB_USER}"
@@ -49,7 +49,6 @@ for i in {1..20} ; do
   echo "$NA: i=$i waiting for database server: <${DB}> ..."
   sleep 1
 done
-
 ########################################
 # Recreate view
 mysql $PARA ${IMAP_DB_NAME} -e "DROP VIEW IF EXISTS sogo_users"
@@ -84,13 +83,15 @@ sed -i "/{{DOMAINS}}/r $X" /etc/sogo/sogo.conf
 sed -i "s/{{DOMAINS}}//g"  /etc/sogo/sogo.conf
 rm $X
 ########################################
-# modify nginx.conf
-#
-FI=/nginx/nginx.conf
-sed -i "s|{{GLOBAL_FRONTEND_PORT}}|$GLOBAL_FRONTEND_PORT|g"  $FI
-sed -i "s|{{SOGO_FRONTEND_FQDN}}|$SOGO_FRONTEND_FQDN|g"  $FI
+# modify /etc/cron.d/sogo
+sed -i "s|{{SOGO_APP_SESSION_EXPIRE}}|$SOGO_APP_SESSION_EXPIRE|g" /etc/cron.d/sogo
 ########################################
+# 
 if [ "${IMAP_ADMIN_CREDS}" != "" ] ; then
   echo "Create </etc/sogo/sieve.creds> ..."
   echo "${IMAP_ADMIN_CREDS}" > /etc/sogo/sieve.creds
 fi
+########################################
+# restart sogo after sogo initial startup (sogo wrote sogo_alarms_folder table)
+/usr/local/bin/check-ready &
+exit 0
