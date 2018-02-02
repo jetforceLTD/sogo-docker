@@ -69,17 +69,16 @@ services:
         - "80"
     labels:
       - traefik.enable=true
-      - traefik.backend=sogo
       - traefik.port=80
-      - traefik.docker.network=traefik_default
+      - traefik.docker.network=traefik_groupware
       - traefik.frontend.rule=Host:${SOGO_FRONTEND_FQDN}
     networks:
-      - traefik_default
+      - traefik_groupware
       - default
       - imap
 networks:
   default:
-  traefik_default:
+  traefik_groupware:
     external: true
   imap:
     external:
