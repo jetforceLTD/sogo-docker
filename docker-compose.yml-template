@@ -9,14 +9,14 @@ services:
       context: ./build
       dockerfile: Dockerfile
       args:
-        SOGO_VERSION: 3.2.10
+        SOGO_VERSION: 4.2.0
         #SOGO_VERSION: 2.3.23
         BUILD_TZ: Europe/Berlin
         GOSU_VERSION: "1.10"
     ##################################################
     # RUN section
     ##################################################
-    image: unimock/sogo-docker:3.2.10-3
+    image: unimock/sogo-docker:4.2.0-0
     container_name: sogo
     hostname: sogo
     restart: unless-stopped
